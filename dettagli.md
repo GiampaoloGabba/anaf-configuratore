@@ -23,6 +23,16 @@ Opzioni → OpzioniGruppi (ordinamento e raggruppamento)
 OpzioniProdottiEsclusioni → Regole di incompatibilità
 ```
 
+### Interfaccia Utente del Sistema
+
+Di seguito viene mostrata l'interfaccia reale del configuratore durante il processo di creazione di un preventivo:
+
+![Screenshot del Sistema Configuratore](screen1.png)
+
+*L'interfaccia mostra la selezione del cliente, la configurazione del prodotto con le relative opzioni, e il riepilogo finale con tutti i totali calcolati automaticamente.*
+
+---
+
 ## Flusso Utente Completo
 
 ### 1. Selezione Cliente
