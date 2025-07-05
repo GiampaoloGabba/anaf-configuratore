@@ -184,7 +184,7 @@ Il sistema configuratore si basa su tabelle di configurazione che definiscono i 
 
 *La tabella Cluster Nazioni definisce i raggruppamenti geografici e le relative variazioni percentuali sui prezzi. Ogni cluster (Italia, Europa, Spagna, Francia, Resto del mondo) ha una specifica maggiorazione che viene applicata automaticamente ai prezzi base in funzione dell'area geografica del cliente.*
 
-**Impatto Business**: Questa configurazione permette di implementare strategie di prezzo differenziate per area geografica, applicando automaticamente maggiorazioni per mercati premium (es. Italia 100%, Europa 50%) o configurazioni base per altri mercati (es. Spagna, Francia, Resto del mondo con percentuali specifiche).
+**Impatto Business**: Questa configurazione permette di implementare strategie di prezzo differenziate per area geografica, applicando automaticamente maggiorazioni per mercati specifici (es. Italia 100%, Europa 50%) o configurazioni base per altri mercati (es. Spagna, Francia, Resto del mondo con percentuali specifiche).
 
 ### Gestione Settori di Attività
 
@@ -332,14 +332,14 @@ Il sistema genera un riepilogo completo e trasparente che fornisce una visione d
 │              RIEPILOGO PREVENTIVO                   │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
-│  🔵 TOTALE FINALE:           €  1.250,00           │
+│  🔵 TOTALE FINALE:           €    22,34           │
 │                                                     │
-│     📋 Totale listino:       €  1.450,00           │
-│     💰 Sconto assegnato:     €    150,00           │
-│     ✂️  Sconto manuale:      €     50,00           │
-│     ⚠️  Costo produzione:    €    890,00           │
+│     📋 Totale listino:       €    27,04           │
+│     💰 Sconto assegnato:     €     2,70           │
+│     ✂️  Sconto manuale:      €     2,00           │
+│     ⚠️  Costo produzione:    €     4,21           │
 │                                                     │
-│  ✅ Margine garantito: € 360,00 (28,8%)            │
+│  ✅ Margine garantito: € 18,13 (81,2%)            │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -382,41 +382,41 @@ Il sistema genera un riepilogo completo e trasparente che fornisce una visione d
 ```
 PASSO 1: Calcolo Totale Listino
 ═══════════════════════════════
-Prezzo Base Prodotto              →  €   850,00
-+ Opzione Supporto Premium        →  €   120,00
-+ Opzione Certificazione Marina   →  €   180,00
-+ Opzione Manometro Digitale      →  €    95,00
+Prezzo Base Prodotto PSI-X ABC    →  €     6,21
++ Opzione SUPPORTO MURO STANDARD  →  €     0,27
++ Certificazione BENOR B          →  €     0,77
++ Opzione PORTAMANICHETTA D100    →  €     0,26
                                      ──────────
-Subtotale Base + Opzioni          →  € 1.245,00
-× Coefficiente Specifico (1.8)    →  € 2.241,00
-+ Variazione Cluster (100%)       →  € 2.241,00
+Subtotale Base + Opzioni          →  €     7,51
+× Coefficiente Specifico (1.8)    →  €    13,52
++ Variazione Cluster (100%)       →  €    13,52
 + Variazione Settore (0%)         →  €     0,00
                                      ──────────
-TOTALE LISTINO                    →  € 4.482,00
+TOTALE LISTINO                    →  €    27,04
 
 PASSO 2: Calcolo Costo Produzione
 ═════════════════════════════════
-Costo Base Prodotto               →  €   680,00
-+ Costo Supporto Premium          →  €    85,00
-+ Costo Certificazione Marina     →  €    95,00
-+ Costo Manometro Digitale        →  €    30,00
+Costo Base Prodotto PSI-X ABC     →  €     3,07
++ Costo SUPPORTO MURO STANDARD    →  €     0,175
++ Costo Certificazione BENOR B    →  €     0,77
++ Costo PORTAMANICHETTA D100      →  €     0,194
                                      ──────────
-COSTO TOTALE                      →  €   890,00
+COSTO TOTALE                      →  €     4,21
 
 PASSO 3: Applicazione Sconti
 ═══════════════════════════
-Totale Listino                    →  € 4.482,00
-- Sconto Cliente (10%)            →  €   448,20
+Totale Listino                    →  €    27,04
+- Sconto Cliente (10%)            →  €     2,70
                                      ──────────
-Subtotale dopo sconto cliente     →  € 4.033,80
-- Sconto Manuale                  →  €   200,00
+Subtotale dopo sconto cliente     →  €    24,34
+- Sconto Manuale                  →  €     2,00
                                      ──────────
-TOTALE FINALE                     →  € 3.833,80
+TOTALE FINALE                     →  €    22,34
 
 PASSO 4: Verifica Margine
 ════════════════════════
-Totale Finale (€ 3.833,80) > Costo (€ 890,00) ✅
-Margine: € 2.943,80 (76,8%)
+Totale Finale (€ 22,34) > Costo (€ 4,21) ✅
+Margine: € 18,13 (81,2%)
 ```
 
 ### Controlli di Validazione dei Totali
