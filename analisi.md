@@ -297,22 +297,28 @@ Il sistema applica le configurazioni seguendo una gerarchia precisa:
 
 **Esempio Pratico con Coefficiente Specifico**:
 - Prodotto PSI-X ABC per cliente italiano del settore Antincendio
-- Prezzo base: €500
+- Prezzo base prodotto: €6.21
+- Opzioni selezionate: SUPPORTO MURO STANDARD (€0.27) + PORTAMANICHETTA D100 (€0.26)
+- Certificazione: BENOR B (€0.77)
+- Subtotale base + opzioni: €6.21 + €0.27 + €0.26 + €0.77 = €7.51
 - Coefficiente specifico: 1.8 (dalla tabella combinazioni prodotto+cluster+settore)
-- Prezzo dopo coefficiente: €500 × 1.8 = €900
-- Variazione cluster Italia: 100% = €900
+- Prezzo dopo coefficiente: €7.51 × 1.8 = €13.52
+- Variazione cluster Italia: 100% = €13.52
 - Variazione settore Antincendio: 0% = €0
-- Totale listino: €900 + €900 + €0 = €1.800
+- Totale listino: €13.52 + €13.52 + €0 = €27.04
 - Sconto cliente: variabile per cliente
 
 **Esempio Pratico con Coefficiente Globale**:
-- Prodotto generico per cliente francese del settore Nautica
-- Prezzo base: €500
-- Coefficiente globale: 1.5 (non esiste combinazione specifica)
-- Prezzo dopo coefficiente: €500 × 1.5 = €750
-- Variazione cluster Francia: secondo configurazione cluster = €X
+- Prodotto PSI-X ABC per cliente francese del settore Nautica
+- Prezzo base prodotto: €6.21
+- Opzioni selezionate: FONDELLO PLASTICA CON PORTAMANICHETTA NERO (€0.94)
+- Certificazione: VKF (€0.43)
+- Subtotale base + opzioni: €6.21 + €0.94 + €0.43 = €7.58
+- Coefficiente globale: 1.5 (non esiste combinazione specifica per Francia-Nautica)
+- Prezzo dopo coefficiente: €7.58 × 1.5 = €11.37
+- Variazione cluster Francia: secondo configurazione cluster
 - Variazione settore Nautica: 0% = €0
-- Totale listino: €750 + €X + €0
+- Totale listino: dipende dalla configurazione cluster Francia
 - Sconto cliente: variabile per cliente
 
 Questa stratificazione permette una gestione commerciale molto sofisticata mantenendo la semplicità operativa per l'utente finale.
