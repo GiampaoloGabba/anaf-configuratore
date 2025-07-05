@@ -69,8 +69,8 @@ Di seguito viene mostrata l'interfaccia reale del configuratore durante il proce
 Quando l'operatore seleziona un cliente, il sistema carica immediatamente tutti i parametri commerciali associati. Questo non è semplicemente un'operazione anagrafica, ma l'attivazione di una strategia di prezzo specifica.
 
 **Cosa succede automaticamente**:
-- Il sistema identifica il cluster geografico del cliente (es. "Europa Occidentale", "Mercati Emergenti")
-- Determina il settore di attività (es. "Grande Distribuzione", "Installatori Locali")
+- Il sistema identifica il cluster geografico del cliente (es. "Italia", "Europa", "Spagna", "Francia", "Resto del mondo")
+- Determina il settore di attività (es. "Antincendio", "Grande distribuzione", "Auto", "Aeronautica", "Nautica", "Vario")
 - Applica lo sconto cliente preconfigurato
 - Carica le variazioni di prezzo per area geografica e settore
 
@@ -114,11 +114,15 @@ Se l'operatore seleziona una certificazione per "ambienti marini", il sistema di
 ### Schema del Calcolo Automatico
 
 ```
-PREZZO BASE PRODOTTO
+PREZZO BASE PRODOTTO + OPZIONI
+         ↓
+APPLICAZIONE COEFFICIENTE
+(Specifico per Prodotto+Cluster+Settore SE ESISTE,
+altrimenti Coefficiente Globale)
+         ↓
+PREZZO MOLTIPLICATO
          +
-COSTO OGNI OPZIONE SELEZIONATA
-         +
-ADEGUAMENTI GEOGRAFICI/SETTORE (Coefficienti Cluster + Settore)
+VARIAZIONI PERCENTUALI (Cluster + Settore)
          =
 PREZZO LORDO CONFIGURAZIONE
          -
@@ -138,9 +142,10 @@ CONTROLLO: Prezzo Finale ≥ Costo Totale?
 
 **Prezzo Base e Opzioni**: Ogni prodotto ha un prezzo di partenza. Ogni opzione selezionata aggiunge il proprio costo al totale.
 
-**Adeguamenti Automatici**: Il sistema applica automaticamente maggiorazioni o riduzioni basate su:
-- **Cluster Geografico**: Adeguamenti per mercati diversi (es. +15% per mercati premium, -10% per mercati emergenti)
-- **Settore Cliente**: Variazioni per tipologia di business (es. +5% per piccoli installatori, -8% per grandi distribuzioni)
+**Adeguamenti Automatici**: Il sistema applica automaticamente maggiorazioni o riduzioni attraverso due livelli di coefficienti:
+- **Coefficienti Globali**: Moltiplicatori base applicati a tutti i prodotti (es. coefficiente 1.5 su tutti i prezzi)
+- **Coefficienti Specifici**: Moltiplicatori dedicati per combinazioni Prodotto+Cluster+Settore (es. coefficiente 1.8 per PSI-X ABC in Italia-Antincendio)
+- **Variazioni Percentuali**: Adeguamenti aggiuntivi per cluster geografico e settore (es. Italia 100%, Europa 50%, tutti i settori attualmente 0%)
 
 **Sconti Stratificati**:
 - **Sconto Cliente**: Percentuale fissa associata al cliente, applicata automaticamente
@@ -179,7 +184,7 @@ Il sistema configuratore si basa su tabelle di configurazione che definiscono i 
 
 *La tabella Cluster Nazioni definisce i raggruppamenti geografici e le relative variazioni percentuali sui prezzi. Ogni cluster (Italia, Europa, Spagna, Francia, Resto del mondo) ha una specifica maggiorazione che viene applicata automaticamente ai prezzi base in funzione dell'area geografica del cliente.*
 
-**Impatto Business**: Questa configurazione permette di implementare strategie di prezzo differenziate per area geografica, applicando automaticamente maggiorazioni per mercati premium (es. Italia 100%) o riduzioni per mercati emergenti (es. Resto del mondo 0%).
+**Impatto Business**: Questa configurazione permette di implementare strategie di prezzo differenziate per area geografica, applicando automaticamente maggiorazioni per mercati premium (es. Italia 100%, Europa 50%) o configurazioni base per altri mercati (es. Spagna, Francia, Resto del mondo con percentuali specifiche).
 
 ### Gestione Settori di Attività
 
@@ -187,7 +192,7 @@ Il sistema configuratore si basa su tabelle di configurazione che definiscono i 
 
 *La tabella Settori classifica i clienti per tipologia di business (Antincendio, Grande distribuzione, Auto, Aeronautica, Nautica, Vario) con le relative variazioni percentuali. Attualmente tutti i settori sono configurati con 0% di variazione, indicando una politica di prezzo uniforme tra settori.*
 
-**Significato Operativo**: Questa struttura consente di implementare facilmente politiche commerciali differenziate per settore (es. sconti volume per grande distribuzione, maggiorazioni per settori specializzati) semplicemente modificando le percentuali associate.
+**Significato Operativo**: Questa struttura consente di implementare facilmente politiche commerciali differenziate per settore. Attualmente tutti i settori (Antincendio, Grande distribuzione, Auto, Aeronautica, Nautica, Vario) sono configurati con 0% di variazione, indicando una politica di prezzo uniforme, ma la struttura permette di modificare facilmente queste percentuali per implementare strategie specifiche per settore.
 
 ### Catalogazione Certificazioni
 
@@ -266,20 +271,48 @@ Il sistema configuratore si basa su tabelle di configurazione che definiscono i 
 
 **Strategia Commerciale Avanzata**: Questa configurazione permette di applicare strategie di prezzo molto granulari, dove lo stesso prodotto può avere coefficienti moltiplicativi diversi in base alla combinazione di area geografica e settore del cliente specifico.
 
+**Come Funzionano i Coefficienti nel Calcolo**:
+I coefficienti sono moltiplicatori che vengono applicati al prezzo base (prodotto + opzioni) PRIMA dell'applicazione delle variazioni percentuali geografiche e settoriali. Questo significa che:
+
+1. **Prezzo Base + Opzioni** → Subtotale iniziale
+2. **× Coefficiente** → Prezzo moltiplicato (questo è il passaggio chiave)
+3. **+ Variazioni % Cluster/Settore** → Prezzo finale listino
+
+Il coefficiente trasforma quindi il prezzo base in un nuovo livello di prezzo, su cui poi si applicano gli adeguamenti percentuali per area geografica e settore.
+
 ### Logica di Priorità nelle Configurazioni
 
 Il sistema applica le configurazioni seguendo una gerarchia precisa:
 
-1. **Coefficienti Specifici**: Se esiste una combinazione Prodotto+Cluster+Settore, questa ha la priorità assoluta
-2. **Coefficienti Globali**: In assenza di combinazioni specifiche, si applicano i coefficienti generali
-3. **Variazioni Geografiche e Settoriali**: Si sommano sempre alle configurazioni base
-4. **Sconti Cliente**: Si applicano sul totale finale calcolato
+1. **Coefficienti Specifici**: Se esiste una combinazione Prodotto+Cluster+Settore nella tabella "Combinazioni coefficienti", questo coefficiente viene usato con priorità assoluta
+2. **Coefficienti Globali**: In assenza di combinazioni specifiche, si applica il coefficiente generale dalla tabella "Coefficienti"
+3. **Applicazione del Coefficiente**: Il coefficiente scelto moltiplica il subtotale (prodotto base + tutte le opzioni)
+4. **Variazioni Percentuali**: Le variazioni geografiche e settoriali si sommano al prezzo già moltiplicato per il coefficiente
+5. **Sconti Cliente**: Si applicano sul totale finale calcolato
 
-**Esempio Pratico**:
-- Prodotto PSI-X ABC per cliente italiano del settore antincendio
-- Coefficiente specifico: 1.8 (dalla tabella combinazioni)
-- Variazione cluster Italia: +100%
-- Variazione settore Antincendio: +0%
+**Ordine di Priorità per la Selezione del Coefficiente**:
+- **PRIMA verifica**: Esiste coefficiente specifico per [Prodotto X + Cluster Y + Settore Z]?
+- **SE SÌ**: Usa coefficiente specifico
+- **SE NO**: Usa coefficiente globale di default
+
+**Esempio Pratico con Coefficiente Specifico**:
+- Prodotto PSI-X ABC per cliente italiano del settore Antincendio
+- Prezzo base: €500
+- Coefficiente specifico: 1.8 (dalla tabella combinazioni prodotto+cluster+settore)
+- Prezzo dopo coefficiente: €500 × 1.8 = €900
+- Variazione cluster Italia: 100% = €900
+- Variazione settore Antincendio: 0% = €0
+- Totale listino: €900 + €900 + €0 = €1.800
+- Sconto cliente: variabile per cliente
+
+**Esempio Pratico con Coefficiente Globale**:
+- Prodotto generico per cliente francese del settore Nautica
+- Prezzo base: €500
+- Coefficiente globale: 1.5 (non esiste combinazione specifica)
+- Prezzo dopo coefficiente: €500 × 1.5 = €750
+- Variazione cluster Francia: secondo configurazione cluster = €X
+- Variazione settore Nautica: 0% = €0
+- Totale listino: €750 + €X + €0
 - Sconto cliente: variabile per cliente
 
 Questa stratificazione permette una gestione commerciale molto sofisticata mantenendo la semplicità operativa per l'utente finale.
@@ -354,11 +387,12 @@ Prezzo Base Prodotto              →  €   850,00
 + Opzione Certificazione Marina   →  €   180,00
 + Opzione Manometro Digitale      →  €    95,00
                                      ──────────
-Subtotale Opzioni                 →  € 1.245,00
-+ Adeguamento Cluster (+8%)       →  €    99,60
-+ Adeguamento Settore (+7%)       →  €    87,15
+Subtotale Base + Opzioni          →  € 1.245,00
+× Coefficiente Specifico (1.8)    →  € 2.241,00
++ Variazione Cluster (100%)       →  € 2.241,00
++ Variazione Settore (0%)         →  €     0,00
                                      ──────────
-TOTALE LISTINO                    →  € 1.450,00
+TOTALE LISTINO                    →  € 4.482,00
 
 PASSO 2: Calcolo Costo Produzione
 ═════════════════════════════════
@@ -371,18 +405,18 @@ COSTO TOTALE                      →  €   890,00
 
 PASSO 3: Applicazione Sconti
 ═══════════════════════════
-Totale Listino                    →  € 1.450,00
-- Sconto Cliente (10%)            →  €   145,00
+Totale Listino                    →  € 4.482,00
+- Sconto Cliente (10%)            →  €   448,20
                                      ──────────
-Subtotale dopo sconto cliente     →  € 1.305,00
-- Sconto Manuale                  →  €    55,00
+Subtotale dopo sconto cliente     →  € 4.033,80
+- Sconto Manuale                  →  €   200,00
                                      ──────────
-TOTALE FINALE                     →  € 1.250,00
+TOTALE FINALE                     →  € 3.833,80
 
 PASSO 4: Verifica Margine
 ════════════════════════
-Totale Finale (€ 1.250,00) > Costo (€ 890,00) ✅
-Margine: € 360,00 (28,8%)
+Totale Finale (€ 3.833,80) > Costo (€ 890,00) ✅
+Margine: € 2.943,80 (76,8%)
 ```
 
 ### Controlli di Validazione dei Totali
